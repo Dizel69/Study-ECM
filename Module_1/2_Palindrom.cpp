@@ -1,10 +1,11 @@
-﻿//На вход даётся число. Определить, является оно палиндромом или нет.
+﻿//№2 Дано натуральное число n. Определить, является ли число n палиндромом
 
 #include <iostream>
 using namespace std;
 
+
 int main() {
-	
+
 	int n, m, p;
 	printf("Vvedite chislo \n");
 	scanf_s("%d", &n);
