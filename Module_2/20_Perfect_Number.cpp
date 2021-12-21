@@ -15,52 +15,74 @@ void fill_arr(int* arr, int n) {
 		scanf_s("%d", arr++);
 	}
 }
-bool n20isperfect(int n) {
-	int halfn = n / 2, sum = 0;
-	for (int i = 0; i <= halfn; i++) {
+
+bool isperfect(int n) {                // проверка числа на совершенность
+	int hn = n / 2, sum = 0;
+	for (int i = 1; i <= hn; i++) {
 		if (!(n % i)) sum += i;
 	}
 
 	return sum == n;
 }
-void find_perfects(int* arr, int n, int& p, int& q) {
+
+void find_sovs(int* arr, int n, int& fst, int& lst) {       // нахождение индексов первого и последнего совершенных чисел
 	int i;
+	fst = lst = 0;
 	for (i = 0; i < n; i++) {
-		if (n20isperfect(arr[i])) {
-			p = i;
+		if (isperfect(arr[i])) {
+			fst = i;
 			break;
 		}
 	}
 	for (i = n - 1; i >= 0; i--) {
-		if (n20isperfect(arr[i])) {
-			q = i;
-			break;
+		if (isperfect(arr[i])) {
+			lst = i;
+			return;
 		}
 	}
+	return;
 }
-int check_progression(int* arr, int first, int last) {
-	if (last - first <= 2) return -1;
-	else {
-		int d = arr[first + 2] - arr[first + 1];
-		for (int i = first + 2; i < last - 1; i++) {
-			if (arr[i + 1] - arr[i] != d) return 0;
-		}
 
-		return 1;
+int* slice(int* arr, int fst, int lst, int& newlen) {          // получение среза и его длины
+	newlen = lst - fst - 1;
+	int* sl = new int[lst - fst - 1];
+	int i, j;
+	for (i = fst + 1, j = 0; i < lst; i++, j++) {
+		sl[j] = arr[i];
 	}
+	return sl;
+}
+
+bool check_prog(int* arr, int n) {     // проверка на арифметическую прогрессию
+	int d = arr[1] - arr[0];
+	for (int i = 1; i < n - 1; i++) {
+		if (arr[i + 1] - arr[i] != d) return false;
+	}
+	return true;
 }
 int main() {
-	int n;
-	scanf_s("%d", &n);
-	int* a = create_arr(n);
-	fill_arr(a, n);
+	int n; scanf_s("%d", &n);
+	int* arr = create_arr(n);
+	fill_arr(arr, n);
 
-	int f = 0, l = 0;
-	find_perfects(a, n, f, l);
+	int fst, lst;
+	find_sovs(arr, n, fst, lst);
 
-	int res = check_progression(a, f, l);
-	if (!res) printf("not a progression\n");
-	else if (res == 1) printf("progression\n");
-	else printf("no sequence\n");
+	if (lst - fst > 2) {
+		int nlen;
+		int* slc = slice(arr, fst, lst, nlen);
+		if (check_prog(slc, nlen)) {
+			printf("It's a progression\n");
+		}
+		else {
+			printf("It's not a progression\n");
+		}
+	}
+	else {
+		printf("No sequence\n");
+	}
 
+
+
+	return 0;
 }
